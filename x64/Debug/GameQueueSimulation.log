@@ -1,0 +1,6 @@
+﻿  GameQueueSimulation.cpp
+E:\cursed\GameQueueSimulation\GameQueueSimulation\GameQueueSimulation.cpp(21,19): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+E:\cursed\GameQueueSimulation\GameQueueSimulation\GameQueueSimulation.cpp(16,9): warning C4101: 'userAmount': unreferenced local variable
+E:\cursed\GameQueueSimulation\GameQueueSimulation\GameQueueSimulation.cpp(15,19): warning C4101: 'end': unreferenced local variable
+E:\cursed\GameQueueSimulation\GameQueueSimulation\GameQueueSimulation.cpp(15,12): warning C4101: 'start': unreferenced local variable
+  GameQueueSimulation.vcxproj -> E:\cursed\GameQueueSimulation\x64\Debug\GameQueueSimulation.exe
