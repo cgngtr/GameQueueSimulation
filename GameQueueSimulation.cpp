@@ -3,6 +3,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <sqlite3.h>
 
 using namespace std;
 using namespace this_thread;
@@ -17,24 +18,57 @@ public:
 
     Player(int id, const string& name, int playerAge, const string& playerGender)
         : playerID(id), username(name), age(playerAge), gender(playerGender) {}
-};
+    };
 
+    vector<Player> getPlayersFromDatabase() 
+    {
+        vector<Player> players;
+
+        sqlite3* db;
+        int rc = sqlite3_open("E:/cursed/GameQueueSimulation/db/db.db", &db);
+
+        if (rc != SQLITE_OK) { 
+            cerr << "Error opening database: " << sqlite3_errmsg(db) << endl;
+            sqlite3_close(db);
+            return players;
+        }
+
+        const char* query = "SELECT playerID, username, age, gender FROM playerList";
+        sqlite3_stmt* stmt; // db ile konusan handler
+
+        rc = sqlite3_prepare_v2(db, query, -1, &stmt, nullptr);
+
+        while ((rc = sqlite3_step(stmt)) == SQLITE_ROW) { // .
+            int playerID = sqlite3_column_int(stmt, 0);
+            const char* username = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+            int age = sqlite3_column_int(stmt, 2);
+            const char* gender = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+
+            players.push_back(Player(playerID, username, age, gender));
+        }
+
+        sqlite3_finalize(stmt); // handler kapatir
+        sqlite3_close(db); // butun db'yi kapatir
+
+        return players;
+    }
 int main()
 {
-    vector<Player> playerList;
+    vector<Player> playerList = getPlayersFromDatabase();
+
     int userAmount; // Enter an amount of users to wait in the q system. (Less than 4)
 
     // Pushing players to the list.
-    playerList.push_back(Player(2558960, "reveck", 25, "Male"));
+    /*playerList.push_back(Player(2558960, "reveck", 25, "Male"));
     playerList.push_back(Player(2558961, "baechu", 30, "Female"));
-    playerList.push_back(Player(2558962, "beemo", 22, "Male"));
+    playerList.push_back(Player(2558962, "beemo", 22, "Male"));*/
 
     do
     {
         cout << "Enter the amount of users to wait in the queue: " << endl;
         cin >> userAmount;
         if(userAmount > playerList.size())
-            cout << "Can't do more than 3 " << endl;
+            cout << "Can't do more than " << playerList.size() << endl;
     } while (userAmount > playerList.size());
 
     srand(time(NULL));
